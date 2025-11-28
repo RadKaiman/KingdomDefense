@@ -5,11 +5,12 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] protected int number;
     [SerializeField] protected int line;
-    [SerializeField] protected string type;
-    [SerializeField] protected GameObject[] structure;
+    [SerializeField] protected int type;
+    [SerializeField] protected GameObject structure;
+    [SerializeField] protected Transform spawnPoint;
     protected int currentLevel;
     protected bool haveStructure = false;
-    protected int typeStructure;
+    protected int typeStructure = 0;
 
     bool isActive = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -26,7 +27,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
     public void OnClicke()
     {
-        Debug.Log($"{line}.{number}");
+        FindAnyObjectByType<GameManager>().ChangeTilePanel(this, true, type, typeStructure, haveStructure);
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -38,5 +39,20 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     public void ChangeActive(bool act)
     {
         isActive = act;
+    }
+
+    public void BuildStructure(GameObject _structure, int typeStruct)
+    {
+        structure = Instantiate(_structure, spawnPoint.position, spawnPoint.rotation);
+        typeStructure = typeStruct;
+        haveStructure = true;
+    }
+
+    public void DestroyStructure()
+    {
+        haveStructure = false;
+        Destroy(structure);
+        structure = null;
+        typeStructure = 0;
     }
 }
